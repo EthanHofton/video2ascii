@@ -1,4 +1,7 @@
 #include <video2ascii/ascii_player.hpp>
+#include <video2ascii/sound.hpp>
+
+sound::source s_source;
 
 extern display_mode get_display_mode(int argc, char** argv) {
     display_mode mode = display_mode::ASCII;
@@ -42,7 +45,7 @@ extern void print_video(cv::VideoCapture t_cap, int t_fps, int t_animation_width
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    // sound::play_sound(src);
+    sound::play_sound(s_source);
     // Turn off output buffering for stdout
     while (true) {
         delta_time = std::chrono::duration<float>(std::chrono::system_clock::now() - time).count();

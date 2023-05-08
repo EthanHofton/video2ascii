@@ -14,14 +14,22 @@ int main(int argc, char** argv) {
         std::cerr << "Error opening video stream or file\n";
         return EXIT_FAILURE;
     }
+    sound::context ctx = sound::init_sound();
 
-    // get fps, and video params
-    float fps;
-    int animation_width, animation_height;
-    calc_params(cap, animation_width, animation_height, fps);
+    sound::source s = sound::create_source();
+    sound::load_sound(argv[optind], s);
 
-    // print the video to the string
-    print_video(cap, fps, animation_width, animation_height, mode);
+    // // get fps, and video params
+    // float fps;
+    // int animation_width, animation_height;
+    // calc_params(cap, animation_width, animation_height, fps);
+    //
+    // // print the video to the string
+    // print_video(cap, fps, animation_width, animation_height, mode);
+    sound::play_sound(s);
+
+    sound::close_sound(ctx);
+    sound::delete_source(s);
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef __ASCII_PLAYER_HPP__
 #define __ASCII_PLAYER_HPP__
 
+#include <video2ascii/sound.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
@@ -15,6 +16,8 @@
 #define CURSOR_HOME (printf("%c[H", ASCII_ESC))
 #define SET_COLOR(R, G, B) (printf("%c[38;2;%d;%d;%dm", ASCII_ESC, R, G, B))
 #define SET_BACKGROUND_COLOR(R, G, B) (printf("%c[48;2;%d;%d;%dm", ASCII_ESC, R, G, B))
+
+extern sound::source s_source;
 
 enum display_mode {
     ASCII,
