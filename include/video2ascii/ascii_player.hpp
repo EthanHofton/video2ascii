@@ -16,6 +16,7 @@
 #define CURSOR_HOME (printf("%c[H", ASCII_ESC))
 #define SET_COLOR(R, G, B) (printf("%c[38;2;%d;%d;%dm", ASCII_ESC, R, G, B))
 #define SET_BACKGROUND_COLOR(R, G, B) (printf("%c[48;2;%d;%d;%dm", ASCII_ESC, R, G, B))
+#define CLEAR_SCREEN (printf("%c[2J", ASCII_ESC))
 
 extern sound::source s_source;
 
@@ -28,9 +29,9 @@ enum display_mode {
     NONE,
 };
 
-static int map(int, int, int, int, int);
 static char pixel_to_ascii(int t_pixel);
 static void get_terminal_size(int&, int&);
+static void get_char_size(int& char_width, int& char_height);
 
 extern void calc_params(cv::VideoCapture, int&, int&, float&);
 extern void print_video(cv::VideoCapture, int, int, int, display_mode);

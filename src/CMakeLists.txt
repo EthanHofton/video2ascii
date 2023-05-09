@@ -8,17 +8,17 @@ include_directories(${OPENAL_INCLUDE_DIR})
 link_directories(${OPENAL_LIBRARY_DIRS})
 # ===========================================
 
-# ================= ffmpg =================
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavformat libavutil)
-# ===========================================
+# # ================= ffmpg =================
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavformat libavutil)
+# # ===========================================
 
 # ================= SOURCES =================
 set(EXE_NAME "video2ascii")
 
 set(SOURCES
     ascii_player.cpp
-    sound.cpp
+    # sound.cpp
     main.cpp
 )
 # ============================================
@@ -38,6 +38,6 @@ target_include_directories(${EXE_NAME} PUBLIC
 target_link_libraries(${EXE_NAME} PUBLIC
     ${OpenCV_LIBS}
     ${OPENAL_LIBRARY}
-    PkgConfig::FFMPEG
+    # PkgConfig::FFMPEG
 )
 # =========================================

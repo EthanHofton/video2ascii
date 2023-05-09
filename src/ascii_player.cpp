@@ -42,11 +42,13 @@ extern void print_video(cv::VideoCapture t_cap, int t_fps, int t_animation_width
     std::chrono::time_point<std::chrono::system_clock> time = std::chrono::system_clock::now();
     float delta_time = 0.f;
 
+    // Turn off output buffering for stdout
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    sound::play_sound(s_source);
-    // Turn off output buffering for stdout
+    // clear the screen
+    CLEAR_SCREEN;
+
     while (true) {
         delta_time = std::chrono::duration<float>(std::chrono::system_clock::now() - time).count();
 
@@ -120,10 +122,25 @@ extern void calc_params(cv::VideoCapture t_cap, int& t_animation_width, int& t_a
 
     int term_width, term_height;
     get_terminal_size(term_width, term_height);
+    int char_width, char_height;
+    get_char_size(char_width, char_height);
     
-    // TODO: improve this
-    t_animation_width = map(width, 0, width, 0, term_width);
-    t_animation_height = map(height, 0, height, 0, term_height);
+    // Calculate adjusted character aspect ratio
+    float char_aspect_ratio = static_cast<float>(char_height) / char_width;
+
+    // Calculate video aspect ratio, adjusted for character aspect ratio
+    float video_aspect_ratio = static_cast<float>(width) / height * char_aspect_ratio;
+
+    // calculate animation dimensions based on video aspect ratio
+    if (video_aspect_ratio > static_cast<float>(term_width) / term_height) {
+        // limit width
+        t_animation_width = term_width;
+        t_animation_height = static_cast<int>(term_width / video_aspect_ratio);
+    } else {
+        // limit height
+        t_animation_width = static_cast<int>(term_height * video_aspect_ratio);
+        t_animation_height = term_height;
+    }
 }
 
 static char pixel_to_ascii(int t_pixel) {
@@ -142,20 +159,6 @@ static char pixel_to_ascii(int t_pixel) {
     return ascii_chars[char_index];
 }
 
-static int map(int val, int x_min, int x_max, int y_min, int y_max) {
-    // Scale the value to the range [0, 1]
-    double scaled_val = static_cast<double>(val - x_min) / static_cast<double>(x_max - x_min);
-
-    // Map the scaled value to the range [y_min, y_max]
-    int mapped_val = static_cast<int>(scaled_val * (y_max - y_min) + y_min);
-
-    // Ensure that the mapped value is within bounds
-    mapped_val = std::max(y_min, std::min(mapped_val, y_max));
-
-    return mapped_val;
-}
-
-
 static void get_terminal_size(int& t_term_width, int& t_term_height) {
     #ifdef _WIN32
     // get terminal width and height
@@ -169,5 +172,20 @@ static void get_terminal_size(int& t_term_width, int& t_term_height) {
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     t_term_width = w.ws_col;
     t_term_height = w.ws_row;
+    #endif
+}
+
+static void get_char_size(int& char_width, int& char_height) {
+    #ifdef _WIN32
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(cfi);
+    GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+    char_width = cfi.dwFontSize.X;
+    char_height = cfi.dwFontSize.Y;
+    #else
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    char_width = w.ws_xpixel / w.ws_col;
+    char_height = w.ws_ypixel / w.ws_row;
     #endif
 }
