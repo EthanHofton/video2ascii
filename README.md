@@ -23,6 +23,8 @@ Play videos in your terminal displayed as ASCII charicters
 - (From `v1.3.0`) `OpenAL`
 - (From `v1.3.0`) `FFMpeg`
 
+**NOTE:** [iTerm2](https://iterm2.com/) recommended
+
 # Install
 
 ```
