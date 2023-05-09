@@ -2,7 +2,7 @@
 
 Play videos in your terminal displayed as ASCII charicters
 
-![](https://github.com/EthanHofton/video2ascii/res/preview.gif)
+![](https://github.com/EthanHofton/video2ascii/blob/main/res/preview.gif)
 
 ### Features
 
