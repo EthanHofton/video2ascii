@@ -37,7 +37,7 @@ extern display_mode get_display_mode(int argc, char** argv) {
     return mode;
 }
 
-extern void print_video(cv::VideoCapture t_cap, int t_fps, int t_animation_width, int t_animation_height, display_mode t_mode) {
+extern void print_video(cv::VideoCapture t_cap, int t_fps, int t_animation_width, int t_animation_height, int x_offset, int y_offset, display_mode t_mode) {
     cv::Mat frame, gray, resize;
     std::chrono::time_point<std::chrono::system_clock> time = std::chrono::system_clock::now();
     float delta_time = 0.f;
@@ -47,6 +47,7 @@ extern void print_video(cv::VideoCapture t_cap, int t_fps, int t_animation_width
     std::cin.tie(nullptr);
 
     // clear the screen
+    HIDE_CURSOR;
     CLEAR_SCREEN;
 
     while (true) {
@@ -66,8 +67,13 @@ extern void print_video(cv::VideoCapture t_cap, int t_fps, int t_animation_width
                 cv::cvtColor(resize, gray, cv::COLOR_BGR2GRAY);
             }
 
-            std::cout << "\033[1;1H";
+            // move the cursor to the animiation start
+            CURSOR_HOME;
+
+            MOVE_CURSOR_N_DOWN(y_offset);
+
             for (int i = 0; i < resize.rows; i++) {
+                MOVE_CURSOR_N_RIGHT(x_offset);
                 for (int j = 0; j < resize.cols; j++) {
                     switch (t_mode) {
                         case ASCII:
@@ -106,15 +112,15 @@ extern void print_video(cv::VideoCapture t_cap, int t_fps, int t_animation_width
                             return;
                     }
                 }
-                std::cout << "\033[E";
+                CURSOR_NEXT_LINE;
             }
-
             CURSOR_HOME;
         }
     }
+    SHOW_CURSOR;
 }
 
-extern void calc_params(cv::VideoCapture t_cap, int& t_animation_width, int& t_animation_height, float& t_fps) {
+extern void calc_params(cv::VideoCapture t_cap, int& t_animation_width, int& t_animation_height, float& t_fps, int& t_x_offset, int& t_y_offset) {
     // get video width and height
     int width = t_cap.get(cv::CAP_PROP_FRAME_WIDTH);
     int height = t_cap.get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -141,6 +147,10 @@ extern void calc_params(cv::VideoCapture t_cap, int& t_animation_width, int& t_a
         t_animation_width = static_cast<int>(term_height * video_aspect_ratio);
         t_animation_height = term_height;
     }
+
+    // Calculate x and y offsets for centering the video
+    t_x_offset = std::max(0, (term_width - t_animation_width) / 2);
+    t_y_offset = std::max(0, (term_height - t_animation_height) / 2);
 }
 
 static char pixel_to_ascii(int t_pixel) {
