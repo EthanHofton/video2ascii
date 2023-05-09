@@ -2,11 +2,11 @@
 find_package(OpenCV REQUIRED)
 # ===========================================
 
-# ================= OPENAL =================
-find_package(OpenAL REQUIRED)
-include_directories(${OPENAL_INCLUDE_DIR})
-link_directories(${OPENAL_LIBRARY_DIRS})
-# ===========================================
+# # ================= OPENAL =================
+# find_package(OpenAL REQUIRED)
+# include_directories(${OPENAL_INCLUDE_DIR})
+# link_directories(${OPENAL_LIBRARY_DIRS})
+# # ===========================================
 
 # # ================= ffmpg =================
 # find_package(PkgConfig REQUIRED)
@@ -37,7 +37,7 @@ target_include_directories(${EXE_NAME} PUBLIC
 # ================= LINKS =================
 target_link_libraries(${EXE_NAME} PUBLIC
     ${OpenCV_LIBS}
-    ${OPENAL_LIBRARY}
+    # ${OPENAL_LIBRARY}
     # PkgConfig::FFMPEG
 )
 # =========================================
